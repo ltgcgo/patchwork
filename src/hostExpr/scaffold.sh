@@ -92,9 +92,12 @@ for name in ${names[@]}; do
 	# Start the container
 	lxc-start -n "${name}"
 	# Configure Gel
-	lxc-attach -n "${name}" -u 0 -g 0 -- sh "/root/install.sh"
+	lxc-attach -n "${name}" -u 0 -g 0 -- 'sh "/root/install.sh"'
 	# Show the container name
-	lxc-attach -n "${name}" -u 0 -g 0 -- echo "${name}" > /etc/zsh/.customShellName
+	lxc-attach -n "${name}" -u 0 -g 0 -- "echo \"${name}\" > /etc/zsh/.customShellName"
+	# Disable the SSH server by default
+	lxc-attach -n "${name}" -u 0 -g 0 -- 'systemctl disable sshd'
+	lxc-attach -n "${name}" -u 0 -g 0 -- 'systemctl stop sshd'
 	# Increase the start order
 	startOrder=$(($startOrder+1))
 done
