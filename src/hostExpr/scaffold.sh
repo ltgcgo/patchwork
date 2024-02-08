@@ -8,35 +8,38 @@
 REQUIRES_APPARMOR=1
 ERRORED_EXIT=0
 if [ -f "/etc/redhat-release" ] ; then
-	# Fallback for RHEL
+	REQUIRES_APPARMOR=0
+elif [ -f "$(which getenforce)" ] ; then
 	REQUIRES_APPARMOR=0
 fi
 if [ -f "/usr/share/lxc/templates/lxc-download" ] ; then
-	echo "LXC template downloader check passed."
+	echo "⭕ LXC template downloader check passed."
 else
-	echo "LXC template downloader not available."
+	echo "❌ LXC template downloader not available."
 	ERRORED_EXIT=$(($ERRORED_EXIT+1))
 fi
 # Detect if apparmor exists
 if [ "$REQUIRES_APPARMOR" == "1" ] ; then
 	# AppArmor needed
 	if [ -f "/usr/local/sbin/apparmor_parser" ] ; then
-		echo "AppArmor integrity check passed."
+		echo "⭕️ AppArmor integrity check passed."
 	elif [ -f "/usr/sbin/apparmor_parser" ] ; then
-		echo "AppArmor integrity check passed."
+		echo "⭕️ AppArmor integrity check passed."
 	elif [ -f "/sbin/apparmor_parser" ] ; then
-		echo "AppArmor integrity check passed."
+		echo "⭕️ AppArmor integrity check passed."
 	else
-		echo "AppArmor is not installed on this system. Install the \"apparmor\" (apparmor_parser) package first."
+		echo "❌ AppArmor is not installed on this system. Install the \"apparmor\" (apparmor_parser) package first."
 		ERRORED_EXIT=$(($ERRORED_EXIT+1))
 	fi
 else
-	echo "AppArmor integrity check skipped. This system does not use AppArmor."
+	echo "⭕️ This system does not use AppArmor. AppArmor integrity check skipped."
 fi
 # Detect if root access is available
 if [ "$(whoami)" != "root" ] ; then
-	echo "This script requires root permissions."
+	echo "❌ This script requires root permissions."
 	ERRORED_EXIT=$(($ERRORED_EXIT+1))
+else
+	echo "⭕️ Root permissions available."
 fi
 # Total error counts
 if [ "$ERRORED_EXIT" != "0" ] ; then
