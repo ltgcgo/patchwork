@@ -99,8 +99,8 @@ for name in ${names[@]}; do
 	# Show the container name
 	echo "echo \"${name}\" > /etc/zsh/.customShellName" | lxc-attach -n "${name}" -u 0 -g 0 -- bash
 	# Disable the SSH server by default
-	lxc-attach -n "${name}" -u 0 -g 0 -- systemctl disable sshd
-	lxc-attach -n "${name}" -u 0 -g 0 -- systemctl stop sshd
+	lxc-attach -n "${name}" -u 0 -g 0 -- systemctl disable ssh
+	lxc-attach -n "${name}" -u 0 -g 0 -- systemctl stop ssh
 	# Increase the start order
 	startOrder=$(($startOrder+1))
 done
